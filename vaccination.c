@@ -1,6 +1,6 @@
 /**
  * @file vaccination.c
- * @author Bathini Ajay Goud, N. Madhukar, M. Jayanth Kumar
+ * @author Bathini Ajay Goud, Vempati Tharun
  * @brief This file demonstrates the entrire Vaccination Management System which includes loggin, 
  * Slot Booking, Searching, Viewing Stock, Adding stock, Update credentials, Viewing records......
  * @version 0.1
@@ -235,7 +235,7 @@ int isaadharexist(const char *name)
 		{
 			printf("\n\t\t\tInvalid Aadhar Number entered %d digits/12 digits",len);
 	        getch();
-	        adminmenu();
+	        usermenu();
 		}
 		for(index =0; index <len-1 ; ++index)
 		{
@@ -243,7 +243,7 @@ int isaadharexist(const char *name)
 			{
 			    printf("\n\t\t\tInvalid Aadhar Number");
 	            getch();
-	            adminmenu();
+	            usermenu();
 			    break;
 			}
 		}
@@ -393,11 +393,11 @@ void addDataInDataBase()
 	        printf("\n\t\t\tENTER AADHAR NO OF THE PATIENT  = ");
 	        fflush(stdin);
 	        fgets(addInfoInDataBase.aadharNo,MAX_AADHARNO,stdin);
+            status = isaadharexistalready(addInfoInDataBase.aadharNo);
 	        status1 = isaadharexist(addInfoInDataBase.aadharNo);
         	if (status1)
         	{
                 //printf("Asdfasdfasdfasdfasdfasdf");
-            	status = isaadharexistalready(addInfoInDataBase.aadharNo);
 	        	if (status)
 		        {
 		            printf("\n\t\t\tPerson already vaccinated,aadhar no already exist.");
