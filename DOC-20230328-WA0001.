@@ -1,0 +1,329 @@
+{
+ "cells": [
+  {
+   "cell_type": "raw",
+   "metadata": {},
+   "source": [
+    "\n",
+    "Steps:\n",
+    "\n",
+    "1. What is the type of problem and learning type?\n",
+    "   Figure out Datasets required, its format and API's or code to access to it.\n",
+    "2. Data preprocessing: Basic analysis with descriptive stats and visualizations(single and multivariate)\n",
+    "   then claean or fill missing values, scale or normalize the data across features.\n",
+    "3. Split the data for train, and testing of the model\n",
+    "4. Model steps:\n",
+    "    a) pick the model or ML alogrithm (based onlearning type) you want to use and its corresponding api then import package\n",
+    "    b) Create instance of the model\n",
+    "    c) train the model with the training examples\n",
+    "    d) [optinal] validate the model by tuning model hyper parameteres iteratively till the optimum parammetr is chosen\n",
+    "    e) evaluate the model with test data with appropriate metrics to know the generalization performance.\n",
+    "    f) use it for prediction."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Linear Regression Example"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {},
+   "source": [
+    "Predicting the Diabetes progression in a patient based on Age, Gender, BMI, BP and six blood serum measurements using Linear regression."
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "metadata": {},
+   "source": [
+    "This example uses only one feature of the diabetes dataset, in order to illustrate a two-dimensional plot of this regression technique. The straight line can be seen in the plot, showing how linear regression attempts to draw a straight line that will best minimize the residual sum of squares between the observed responses in the dataset, and the responses predicted by the linear approximation.\n",
+    "The coefficients, the residual sum of squares and the variance score are also calculated."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "from sklearn import datasets\n",
+    "\n",
+    "# Load the diabetes dataset\n",
+    "diabetes = datasets.load_diabetes()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(diabetes.keys())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(diabetes.DESCR)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(diabetes.feature_names)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(len(diabetes.data))\n",
+    "print(diabetes.data.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(type(diabetes.data))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(diabetes.data[:10])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(len(diabetes.target))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(diabetes.target[:10])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Use only one feature\n",
+    "diabetes_X = diabetes.data[:,np.newaxis,2] #the newaxis is used to increase the dimension of the existing array by one more dimension\n",
+    "#The np.newaxis is generally used with slicing. \n",
+    "#It indicates that you want to add an additional dimension to the array. \n",
+    "#The position of the np.newaxis represents where I want to add dimensions."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(diabetes_X.shape)\n",
+    "print(diabetes_X[0:5])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Split the data into training/testing sets\n",
+    "X_train = diabetes_X[:-20]\n",
+    "X_test = diabetes_X[-20:]\n",
+    "\n",
+    "#Split the targets into training/testing sets\n",
+    "y_train = diabetes.target[:-20]\n",
+    "y_test = diabetes.target[-20:]\n",
+    "#from sklearn.model_selection import train_test_split\n",
+    "#X_train, X_test, y_train, y_test = train_test_split(diabetes_X, diabetes.target, test_size=0.10, random_state=42)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(\"len(diabetes_X_train)\" , len(X_train))\n",
+    "print(\"len(diabetes_y_train)\", len(y_train))\n",
+    "print(\"len(diabetes_X_test)\", len(X_test))\n",
+    "print(\"len(diabetes_y_test)\", len(y_test))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.linear_model import LinearRegression"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Create linear regression object\n",
+    "regressor = LinearRegression()\n",
+    "# Train the model using the training sets\n",
+    "regressor.fit(X_train, y_train)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# The coefficients\n",
+    "print('Coefficients: \\n', regressor.coef_)\n",
+    "print('Model intercept: \\n', regressor.intercept_)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Make predictions using the testing set\n",
+    "y_pred = regressor.predict(X_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y_pred"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "y_test"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.metrics import mean_squared_error, r2_score\n",
+    "# The mean squared error\n",
+    "MSE = mean_squared_error(y_test,y_pred)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "MSE"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Explained variance score: 1 is perfect prediction\n",
+    "\n",
+    "print('Variance Score:', r2_score(y_test, y_pred))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regressor.score(X_test, y_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Visualising the training set results\n",
+    "import matplotlib.pyplot as plt\n",
+    "plt.scatter(X_train, y_train, color='red')\n",
+    "plt.plot(X_train, regressor.predict(X_train), color='blue')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Visualising the test set results\n",
+    "plt.scatter(X_test, y_test, color='red')\n",
+    "plt.plot(X_train, regressor.predict(X_train), color='blue')"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
